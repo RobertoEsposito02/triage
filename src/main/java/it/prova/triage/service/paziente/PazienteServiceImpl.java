@@ -32,10 +32,10 @@ public class PazienteServiceImpl implements PazienteService {
 	}
 
 	@Override
-	public void inserisciNuovo(Paziente pazienteInstance) {
+	public Paziente inserisciNuovo(Paziente pazienteInstance) {
 		pazienteInstance.setDataRegistrazione(LocalDate.now());
 		pazienteInstance.setStato(StatoPaziente.INT_ATTESA_VISITA);
-		pazienteRepository.save(pazienteInstance);
+		return pazienteRepository.save(pazienteInstance);
 	}
 
 	@Override

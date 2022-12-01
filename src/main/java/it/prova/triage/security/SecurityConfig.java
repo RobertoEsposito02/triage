@@ -44,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
  				
 				.authorizeHttpRequests() 
 				.antMatchers("/api/auth/login").permitAll()
-				.antMatchers("/api/paziente/**").permitAll()//messa a permitAll per fare test piu veloci sul CRUD
+				.antMatchers("/api/paziente/**").hasAnyRole("ADMIN", "SUB_OPERATOR")
 				.antMatchers("/api/utente/userInfo").authenticated()
 				.antMatchers("/api/utente/**").hasRole("ADMIN")
 				.antMatchers("/**").hasAnyRole("ADMIN", "SUB_OPERATOR")

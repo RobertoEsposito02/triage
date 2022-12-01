@@ -26,7 +26,7 @@ public class PazienteDTO {
 	public Paziente buildPazienteModel() {
 		Paziente result = Paziente.builder()
 				.id(id)
-				.nome(cognome)
+				.nome(nome)
 				.cognome(cognome)
 				.codiceFiscale(codiceFiscale)
 				.dataRegistrazione(dataRegistrazione)
