@@ -13,7 +13,6 @@ public class DottoreResponseDTO {
 	private String nome;
 	private String cognome;
 	private String codiceDottore;
-	private String codFiscalePazienteAttualmenteInVisita;
 	private boolean inVisita;
 	private boolean inServizio;
 }
