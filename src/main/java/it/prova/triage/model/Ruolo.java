@@ -21,7 +21,7 @@ import lombok.Setter;
 public class Ruolo {
 	
 	public static final String ROLE_ADMIN = "ROLE_ADMIN";
-	public static final String ROLE_PLAYER = "ROLE_SUB_OPERATOR";
+	public static final String ROLE_SUB_OPERATOR = "ROLE_SUB_OPERATOR";
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
