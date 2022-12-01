@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import it.prova.triage.dto.paziente.PazienteDTO;
 import it.prova.triage.model.Paziente;
+import it.prova.triage.model.StatoPaziente;
 import it.prova.triage.service.paziente.PazienteService;
 import it.prova.triage.web.api.exception.IdNotNullForInsertException;
 import it.prova.triage.web.api.exception.IdNullForUpdateException;
+import it.prova.triage.web.api.exception.PazienteNonDimessoException;
 import it.prova.triage.web.api.exception.PazienteNotFoundException;
 
 @RestController
@@ -68,7 +70,9 @@ public class PazienteController {
 		
 		if(pazienteDaEliminare == null)
 			throw new PazienteNotFoundException("paziente non trovato");
-		
+		if(!pazienteDaEliminare.getStato().equals(StatoPaziente.DIMESSO))
+			throw new PazienteNonDimessoException("impossibile eliminare un paziente non dimesso");
+			
 		pazienteService.rimuovi(id);
 	}
 }
