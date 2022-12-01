@@ -1,11 +1,13 @@
 package it.prova.triage.service.paziente;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import it.prova.triage.model.Paziente;
+import it.prova.triage.model.StatoPaziente;
 import it.prova.triage.repository.paziente.PazienteRepository;
 
 @Service
@@ -31,6 +33,8 @@ public class PazienteServiceImpl implements PazienteService {
 
 	@Override
 	public void inserisciNuovo(Paziente pazienteInstance) {
+		pazienteInstance.setDataRegistrazione(LocalDate.now());
+		pazienteInstance.setStato(StatoPaziente.INT_ATTESA_VISITA);
 		pazienteRepository.save(pazienteInstance);
 	}
 
