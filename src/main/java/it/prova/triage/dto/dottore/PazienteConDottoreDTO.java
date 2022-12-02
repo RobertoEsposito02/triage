@@ -2,6 +2,7 @@ package it.prova.triage.dto.dottore;
 
 import java.time.LocalDate;
 
+import it.prova.triage.model.Paziente;
 import it.prova.triage.model.StatoPaziente;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,4 +22,19 @@ public class PazienteConDottoreDTO {
 	private String cognomeDoc;
 	private String codiceFiscaleDoc;
 	
+	public static PazienteConDottoreDTO buildDTOFromPazienteModelAndDocDTO(Paziente paziente, DottoreResponseDTO doc) {
+		PazienteConDottoreDTO result = PazienteConDottoreDTO.builder()
+				.nomeDoc(doc.getNome())
+				.cognomeDoc(doc.getCognome())
+				.codiceFiscaleDoc(doc.getCodiceDottore())
+				.nome(paziente.getNome())
+				.cognome(paziente.getCognome())
+				.codiceFiscale(paziente.getCodiceFiscale())
+				.codiceDottore(paziente.getCodiceDottore())
+				.dataRegistrazione(paziente.getDataRegistrazione())
+				.stato(paziente.getStato())
+				.build();
+		
+		return result;
+	}
 }

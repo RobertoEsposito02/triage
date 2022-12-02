@@ -18,6 +18,7 @@ import it.prova.triage.dto.dottore.DottoreResponseDTO;
 import it.prova.triage.dto.dottore.PazienteConDottoreDTO;
 import it.prova.triage.model.Paziente;
 import it.prova.triage.service.paziente.PazienteService;
+import it.prova.triage.web.api.exception.PazienteNotFoundException;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -82,16 +83,9 @@ public class AssegnaPazienteController {
 		
 		Paziente paziente = pazienteService.cercaPerCodiceFiscale(codiceDottoreConCodicePaziente.getCodFiscalePazienteAttualmenteInVisita());
 		
-		return PazienteConDottoreDTO.builder()
-				.nomeDoc(doc.getNome())
-				.cognomeDoc(doc.getCognome())
-				.codiceFiscaleDoc(doc.getCodiceDottore())
-				.nome(paziente.getNome())
-				.cognome(paziente.getCognome())
-				.codiceFiscale(paziente.getCodiceFiscale())
-				.codiceDottore(paziente.getCodiceDottore())
-				.dataRegistrazione(paziente.getDataRegistrazione())
-				.stato(paziente.getStato())
-				.build();
+		if(paziente == null)
+			throw new PazienteNotFoundException("paziente non trovato");
+		
+		return PazienteConDottoreDTO.buildDTOFromPazienteModelAndDocDTO(paziente, doc);
 	}
 }
