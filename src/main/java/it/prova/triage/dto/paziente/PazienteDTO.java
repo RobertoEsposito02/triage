@@ -20,6 +20,7 @@ public class PazienteDTO {
 	private String nome;
 	private String cognome;
 	private String codiceFiscale;
+	private String codiceDottore;
 	private LocalDate dataRegistrazione;
 	private StatoPaziente stato;
 	
@@ -33,6 +34,9 @@ public class PazienteDTO {
 				.stato(stato)
 				.build();
 		
+		if(codiceDottore != null)
+			result.setCodiceDottore(codiceDottore);
+		
 		return result;
 	}
 	
@@ -45,6 +49,9 @@ public class PazienteDTO {
 				.dataRegistrazione(pazienteModel.getDataRegistrazione())
 				.stato(pazienteModel.getStato())
 				.build();
+		
+		if(pazienteModel.getCodiceDottore() != null)
+			result.setCodiceDottore(pazienteModel.getCodiceDottore());
 		
 		return result;
 	}
