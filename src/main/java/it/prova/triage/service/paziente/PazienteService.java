@@ -20,4 +20,6 @@ public interface PazienteService {
 	public void impostaCodiceDottore(String cf, String cd);
 	
 	public void dimetti(Long id);
+	
+	public Paziente cercaPerCodiceFiscale(String cf);
 }

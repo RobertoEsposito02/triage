@@ -69,6 +69,7 @@ public class PazienteServiceImpl implements PazienteService {
 			throw new PazienteNotFoundException("paziente non trovato");
 		
 		result.setCodiceDottore(cd);
+		result.setStato(StatoPaziente.IN_VISITA);
 		pazienteRepository.save(result);
 	}
 
@@ -88,4 +89,10 @@ public class PazienteServiceImpl implements PazienteService {
 		pazienteRepository.save(result);
 	}
 
+	@Override
+	public Paziente cercaPerCodiceFiscale(String cf) {
+		return pazienteRepository.findByCodiceFiscale(cf).orElse(null);
+	}
+	
+	
 }

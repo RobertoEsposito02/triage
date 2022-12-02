@@ -15,6 +15,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import it.prova.triage.dto.dottore.DottorePazienteRequestDTO;
 import it.prova.triage.dto.dottore.DottorePazienteResponseDTO;
 import it.prova.triage.dto.dottore.DottoreResponseDTO;
+import it.prova.triage.dto.dottore.PazienteConDottoreDTO;
+import it.prova.triage.model.Paziente;
 import it.prova.triage.service.paziente.PazienteService;
 import reactor.core.publisher.Mono;
 
@@ -64,6 +66,32 @@ public class AssegnaPazienteController {
 
 		return DottorePazienteResponseDTO.builder().codiceDottore(response.getBody().getCodiceDottore())
 				.codFiscalePazienteAttualmenteInVisita(response.getBody().getCodFiscalePazienteAttualmenteInVisita())
+				.build();
+	}
+
+	@PostMapping("/verificaEImposta/{cd}")
+	public PazienteConDottoreDTO verificaEImposta(@PathVariable(required = true) String cd,
+			@RequestBody DottorePazienteRequestDTO dottore) {
+		
+		LOGGER.info(".........invocazione servizio esterno............");
+		
+		DottoreResponseDTO doc = verificaDisponibilitaDottore(cd);
+		DottorePazienteResponseDTO codiceDottoreConCodicePaziente = impostaVisita(dottore);
+		
+		LOGGER.info(".........invocazione servizio esterno completata............");
+		
+		Paziente paziente = pazienteService.cercaPerCodiceFiscale(codiceDottoreConCodicePaziente.getCodFiscalePazienteAttualmenteInVisita());
+		
+		return PazienteConDottoreDTO.builder()
+				.nomeDoc(doc.getNome())
+				.cognomeDoc(doc.getCognome())
+				.codiceFiscaleDoc(doc.getCodiceDottore())
+				.nome(paziente.getNome())
+				.cognome(paziente.getCognome())
+				.codiceFiscale(paziente.getCodiceFiscale())
+				.codiceDottore(paziente.getCodiceDottore())
+				.dataRegistrazione(paziente.getDataRegistrazione())
+				.stato(paziente.getStato())
 				.build();
 	}
 }
