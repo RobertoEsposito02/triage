@@ -15,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import it.prova.triage.dto.dottore.DottorePazienteRequestDTO;
 import it.prova.triage.dto.dottore.DottorePazienteResponseDTO;
 import it.prova.triage.dto.dottore.DottoreResponseDTO;
+import it.prova.triage.service.paziente.PazienteService;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -25,6 +26,9 @@ public class AssegnaPazienteController {
 
 	@Autowired
 	private WebClient webClient;
+
+	@Autowired
+	private PazienteService pazienteService;
 
 	@GetMapping("/{cd}")
 	public DottoreResponseDTO verificaDisponibilitaDottore(@PathVariable(required = true) String cd) {
@@ -41,18 +45,25 @@ public class AssegnaPazienteController {
 
 	@PostMapping("/impostaVisita")
 	public DottorePazienteResponseDTO impostaVisita(@RequestBody DottorePazienteRequestDTO dottore) {
-	
+
+		pazienteService.impostaCodiceDottore(dottore.getCodFiscalePazienteAttualmenteInVisita(),
+				dottore.getCodiceDottore());
+
 		LOGGER.info(".........invocazione servizio esterno............");
-		
-		ResponseEntity<DottorePazienteResponseDTO> response = webClient.post().uri("/impostaVisita")
-				.body(Mono.just(DottorePazienteRequestDTO.builder().codiceDottore(dottore.getCodiceDottore())
-						.codFiscalePazienteAttualmenteInVisita(dottore.getCodFiscalePazienteAttualmenteInVisita())
-						.build()), DottorePazienteRequestDTO.class)
+
+		ResponseEntity<DottorePazienteResponseDTO> response = webClient
+				.post().uri("/impostaVisita").body(
+						Mono.just(DottorePazienteRequestDTO.builder().codiceDottore(dottore.getCodiceDottore())
+								.codFiscalePazienteAttualmenteInVisita(
+										dottore.getCodFiscalePazienteAttualmenteInVisita())
+								.build()),
+						DottorePazienteRequestDTO.class)
 				.retrieve().toEntity(DottorePazienteResponseDTO.class).block();
-		
+
 		LOGGER.info(".........invocazione servizio esterno completata............");
-		
+
 		return DottorePazienteResponseDTO.builder().codiceDottore(response.getBody().getCodiceDottore())
-				.codFiscalePazienteAttualmenteInVisita(response.getBody().getCodFiscalePazienteAttualmenteInVisita()).build();
+				.codFiscalePazienteAttualmenteInVisita(response.getBody().getCodFiscalePazienteAttualmenteInVisita())
+				.build();
 	}
 }

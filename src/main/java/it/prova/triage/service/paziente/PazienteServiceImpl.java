@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import it.prova.triage.model.Paziente;
 import it.prova.triage.model.StatoPaziente;
 import it.prova.triage.repository.paziente.PazienteRepository;
+import it.prova.triage.web.api.exception.PazienteNotFoundException;
 
 @Service
 public class PazienteServiceImpl implements PazienteService {
@@ -41,6 +42,43 @@ public class PazienteServiceImpl implements PazienteService {
 	@Override
 	public void rimuovi(Long idToRemove) {
 		pazienteRepository.deleteById(idToRemove);
+	}
+
+	@Override
+	public void ricovera(Long id) {
+		Paziente result = pazienteRepository.findById(id).orElse(null);
+		
+		if(result == null)
+			throw new PazienteNotFoundException("paziente non trovato");
+		
+		result.setStato(StatoPaziente.RICOVERATO);
+		result.setCodiceDottore(null);
+		
+		pazienteRepository.save(result);
+	}
+
+	@Override
+	public void impostaCodiceDottore(String cf, String cd) {
+		Paziente result = pazienteRepository.findByCodiceFiscale(cf).orElse(null);
+		
+		if(result == null)
+			throw new PazienteNotFoundException("paziente non trovato");
+		
+		result.setCodiceDottore(cd);
+		pazienteRepository.save(result);
+	}
+
+	@Override
+	public void dimetti(Long id) {
+		Paziente result = pazienteRepository.findById(id).orElse(null);
+		
+		if(result == null)
+			throw new PazienteNotFoundException("paziente non trovato");
+		
+		result.setStato(StatoPaziente.DIMESSO);
+		result.setCodiceDottore(null);
+		
+		pazienteRepository.save(result);
 	}
 
 }
