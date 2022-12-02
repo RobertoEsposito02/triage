@@ -18,6 +18,8 @@ public class PazienteConDottoreDTO {
 	private LocalDate dataRegistrazione;
 	private StatoPaziente stato;
 	
+	private String ___________ = "-------";
+	
 	private String nomeDoc;
 	private String cognomeDoc;
 	private String codiceFiscaleDoc;
@@ -27,6 +29,7 @@ public class PazienteConDottoreDTO {
 				.nomeDoc(doc.getNome())
 				.cognomeDoc(doc.getCognome())
 				.codiceFiscaleDoc(doc.getCodiceDottore())
+				.___________("_________________")
 				.nome(paziente.getNome())
 				.cognome(paziente.getCognome())
 				.codiceFiscale(paziente.getCodiceFiscale())

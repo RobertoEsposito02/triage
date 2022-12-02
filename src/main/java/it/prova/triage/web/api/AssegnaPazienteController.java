@@ -3,6 +3,7 @@ package it.prova.triage.web.api;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import it.prova.triage.dto.dottore.DottoreResponseDTO;
 import it.prova.triage.dto.dottore.PazienteConDottoreDTO;
 import it.prova.triage.model.Paziente;
 import it.prova.triage.service.paziente.PazienteService;
+import it.prova.triage.web.api.exception.DottoreNonDisponibileEsception;
 import it.prova.triage.web.api.exception.PazienteNotFoundException;
 import reactor.core.publisher.Mono;
 
@@ -39,7 +41,9 @@ public class AssegnaPazienteController {
 		LOGGER.info(".........invocazione servizio esterno............");
 
 		DottoreResponseDTO dottoreResponseDTO = webClient.get().uri("/verificaDisponibilitaDottore/" + cd).retrieve()
-				.bodyToMono(DottoreResponseDTO.class).block();
+				.onStatus(HttpStatus::is4xxClientError, response -> {
+					throw new DottoreNonDisponibileEsception("dottore non disponibile");
+				}).bodyToMono(DottoreResponseDTO.class).block();
 
 		LOGGER.info(".........invocazione servizio esterno completata............");
 
@@ -73,19 +77,20 @@ public class AssegnaPazienteController {
 	@PostMapping("/verificaEImposta/{cd}")
 	public PazienteConDottoreDTO verificaEImposta(@PathVariable(required = true) String cd,
 			@RequestBody DottorePazienteRequestDTO dottore) {
-		
+
 		LOGGER.info(".........invocazione servizio esterno............");
-		
+
 		DottoreResponseDTO doc = verificaDisponibilitaDottore(cd);
 		DottorePazienteResponseDTO codiceDottoreConCodicePaziente = impostaVisita(dottore);
-		
+
 		LOGGER.info(".........invocazione servizio esterno completata............");
-		
-		Paziente paziente = pazienteService.cercaPerCodiceFiscale(codiceDottoreConCodicePaziente.getCodFiscalePazienteAttualmenteInVisita());
-		
-		if(paziente == null)
+
+		Paziente paziente = pazienteService
+				.cercaPerCodiceFiscale(codiceDottoreConCodicePaziente.getCodFiscalePazienteAttualmenteInVisita());
+
+		if (paziente == null)
 			throw new PazienteNotFoundException("paziente non trovato");
-		
+
 		return PazienteConDottoreDTO.buildDTOFromPazienteModelAndDocDTO(paziente, doc);
 	}
 }
